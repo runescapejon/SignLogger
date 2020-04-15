@@ -7,13 +7,16 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
+import org.spongepowered.api.event.filter.cause.All;
 import org.spongepowered.api.event.filter.cause.First;
+import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -33,7 +36,7 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 
-@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.1", authors = "runescapejon")
+@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.2", authors = "runescapejon")
 public class SignLogger {
 	private static Logger logger;
 	// hmmm why are you reading this? xD
@@ -63,14 +66,12 @@ public class SignLogger {
 		return factory;
 	}
 
-	
-
-
 	@Listener
 	public void onPreInit(GamePreInitializationEvent event) {
 		plugin = this;
 		configload();
 	}
+
 	@Listener
 	public void onGameInitializationEvent(GameInitializationEvent event) {
 		plugin = this;
@@ -109,9 +110,9 @@ public class SignLogger {
 			return;
 		}
 	}
-	
+
 	@Listener
-	public void onChangeSignEvent(ChangeSignEvent event, @First Player player) throws IOException {
+	public void onChangeSignEvent(ChangeSignEvent event, @Root Player player) throws IOException {
 
 		SignData sign = event.getText();
 
@@ -122,36 +123,39 @@ public class SignLogger {
 		int y = event.getTargetTile().getLocation().getBlockY();
 		int z = event.getTargetTile().getLocation().getBlockZ();
 		Location<World> location = world.getLocation(x, y, z);
-		//here log the files
+		// here log the files
 		if (Config.LogFile) {
-		logger(player, event, z, z, z);
+			logger(player, event, z, z, z);
 		}
 		// Logging stuff in console here :)
-		if (Config.ConsoleLog ) {
-		getLogger().info(playername.toString() + " placed a sign: " + " Line 1: " + "["
-				+ sign.getListValue().get().get(0).toPlain() + "]" + " Line 2: " + "["
-				+ sign.getListValue().get().get(1).toPlainSingle() + "]" + " Line 3: " + "["
-				+ sign.getListValue().get().get(2).toPlain() + "]" + " Line 4: " + "["
-				+ sign.getListValue().get().get(3).toPlain() + "] ");
-		getLogger().info("Location: " + worldname + " " + x + " " + y + " " + z);
+		if (Config.ConsoleLog) {
+			getLogger().info(playername.toString() + " placed a sign: " + " Line 1: " + "["
+					+ sign.getListValue().get().get(0).toPlain() + "]" + " Line 2: " + "["
+					+ sign.getListValue().get().get(1).toPlainSingle() + "]" + " Line 3: " + "["
+					+ sign.getListValue().get().get(2).toPlain() + "]" + " Line 4: " + "["
+					+ sign.getListValue().get().get(3).toPlain() + "] ");
+			getLogger().info("Location: " + worldname + " " + x + " " + y + " " + z);
 		}
 		// Have the permission for ingame logging stuff there <3
-		if (player.hasPermission("sign.logger")) {
-			player.sendMessage(Text.of(playername.toString(), TextColors.RED, " placed a sign: ", TextColors.DARK_GREEN,
-					"\n", "Line 1: ", TextColors.RED, "[" + sign.getListValue().get().get(0).toPlain() + "]",
-					TextColors.DARK_GREEN, "\n", "Line 2: ", TextColors.RED, "[",
-					sign.getListValue().get().get(1).toPlainSingle() + "]", TextColors.DARK_GREEN, "\n", "Line 3: ",
-					TextColors.RED, "[", sign.getListValue().get().get(2).toPlain() + "]", TextColors.DARK_GREEN, "\n",
-					"Line 4: ", TextColors.RED, "[", sign.getListValue().get().get(3).toPlain() + "] "));
+		for (Player p : Sponge.getServer().getOnlinePlayers()) {
+			if (p.hasPermission("sign.logger")) {
+				p.sendMessage(Text.of(playername.toString(), TextColors.RED, " placed a sign: ", TextColors.DARK_GREEN,
+						"\n", "Line 1: ", TextColors.RED, "[" + sign.getListValue().get().get(0).toPlain() + "]",
+						TextColors.DARK_GREEN, "\n", "Line 2: ", TextColors.RED, "[",
+						sign.getListValue().get().get(1).toPlainSingle() + "]", TextColors.DARK_GREEN, "\n", "Line 3: ",
+						TextColors.RED, "[", sign.getListValue().get().get(2).toPlain() + "]", TextColors.DARK_GREEN,
+						"\n", "Line 4: ", TextColors.RED, "[", sign.getListValue().get().get(3).toPlain() + "] "));
 
-			player.sendMessage(Text.of(
-					Text.builder("[TP] ").color(TextColors.AQUA).style(TextStyles.BOLD)
-							.onClick(TextActions.executeCallback(Teleport(player, location)))
-							.onHover(TextActions.showText(Text.of("Click here to teleport to the sign."))),
-					TextColors.RED, "Location: ", worldname, " ", x, " ", y, " ", z));
+				p.sendMessage(Text.of(
+						Text.builder("[TP] ").color(TextColors.AQUA).style(TextStyles.BOLD)
+								.onClick(TextActions.executeCallback(Teleport(player, location)))
+								.onHover(TextActions.showText(Text.of("Click here to teleport to the sign."))),
+						TextColors.RED, "Location: ", worldname, " ", x, " ", y, " ", z));
+			}
 		}
 	}
-//I blame Karim it's his setup here .-.
+
+	// I blame Karim it's his setup here .-.
 	static void logger(Player player, ChangeSignEvent event, int x, int y, int z) throws IOException {
 		Logf = new File(getlogDirectory(), "log.txt");
 		BufferedWriter writer = new BufferedWriter(new FileWriter(Logf, true));
