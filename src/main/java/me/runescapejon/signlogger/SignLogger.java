@@ -35,7 +35,7 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 
-@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.4", authors = "runescapejon")
+@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.5", authors = "runescapejon")
 public class SignLogger {
 	private static Logger logger;
 	// hmmm why are you reading this? xD
@@ -128,7 +128,7 @@ public class SignLogger {
 		Location<World> location = world.getLocation(x, y, z);
 		// here log the files
 		if (Config.LogFile) {
-			logger(player, event, z, z, z);
+			logger(player, event, x, y, z);
 		}
 		// Logging stuff in console here :)
 		if (Config.ConsoleLog) {
