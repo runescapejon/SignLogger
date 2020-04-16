@@ -9,13 +9,12 @@ import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.block.tileentity.ChangeSignEvent;
-import org.spongepowered.api.event.filter.cause.All;
-import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
@@ -70,6 +69,10 @@ public class SignLogger {
 	public void onPreInit(GamePreInitializationEvent event) {
 		plugin = this;
 		configload();
+		CommandSpec Uploadsignlog = CommandSpec.builder()
+				.description(Text.of("Allow the sign logger to upload logs to pastie.io"))
+				.permission("signlogger.upload").executor(new Upload()).build();
+		Sponge.getCommandManager().register(this, Uploadsignlog, "Uploadsignlog", "uploadlog");
 	}
 
 	@Listener
