@@ -148,7 +148,7 @@ public class SignLogger {
 
 				p.sendMessage(Text.of(
 						Text.builder("[TP] ").color(TextColors.AQUA).style(TextStyles.BOLD)
-								.onClick(TextActions.executeCallback(Teleport(player, location)))
+								.onClick(TextActions.executeCallback(Teleport(p, location)))
 								.onHover(TextActions.showText(Text.of("Click here to teleport to the sign."))),
 						TextColors.RED, "Location: ", worldname, " ", x, " ", y, " ", z));
 			}
