@@ -35,7 +35,7 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 
-@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.3", authors = "runescapejon")
+@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.4", authors = "runescapejon")
 public class SignLogger {
 	private static Logger logger;
 	// hmmm why are you reading this? xD

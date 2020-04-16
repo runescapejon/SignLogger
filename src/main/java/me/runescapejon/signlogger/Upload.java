@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -56,12 +58,14 @@ public class Upload implements CommandExecutor {
 	}
 
 	public static String getPastie(String string) {
-		HttpURLConnection connection = null;
+		HttpsURLConnection connection = null;
 		try {
-			connection = (HttpURLConnection) new URL("https://pastie.io/documents").openConnection();
-			connection.setDoOutput(true);
+			connection = (HttpsURLConnection) new URL("https://hastebin.com/documents").openConnection();
+			connection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/53.0.2785.143 Chrome/53.0.2785.143 Safari/537.36");
+		    connection.setDoInput(true);
+		    connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+		 
 		} catch (IOException exception) {
 			exception.printStackTrace();
 		}
@@ -73,7 +77,7 @@ public class Upload implements CommandExecutor {
 		}
 		StringBuilder response = new StringBuilder();
 		try (BufferedReader read = new BufferedReader(
-				new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+				new InputStreamReader(connection.getInputStream()))) {
 			String inputLine;
 			while ((inputLine = read.readLine()) != null) {
 				response.append(inputLine);
@@ -83,7 +87,7 @@ public class Upload implements CommandExecutor {
 		}
 
 		JsonElement json = new JsonParser().parse(response.toString());
-		return "https://pastie.io/" + json.getAsJsonObject().get("key").getAsString();
+		return "https://hastebin.com/" + json.getAsJsonObject().get("key").getAsString();
 	}
 
 	private static String readfiles(File file) throws IOException {
