@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.function.Consumer;
 
 import org.slf4j.Logger;
@@ -165,9 +167,10 @@ public class SignLogger {
 		SignData sign = event.getText();
 		World world = player.getWorld();
 		String worldname = world.getName();
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 		if (Logf.length() == 0) {
-
-			writer.write(player.getName() + " placed a sign: " + " Line 1: " + "["
+			writer.write("["+format.format(date) + "] " + player.getName() + " placed a sign: " + " Line 1: " + "["
 					+ sign.getListValue().get().get(0).toPlain() + "]" + " Line 2: " + "["
 					+ sign.getListValue().get().get(1).toPlainSingle() + "]" + " Line 3: " + "["
 					+ sign.getListValue().get().get(2).toPlain() + "]" + " Line 4: " + "["
@@ -176,13 +179,14 @@ public class SignLogger {
 			writer.newLine();
 		} else {
 			writer.newLine();
-			writer.write(player.getName() + " placed a sign: " + " Line 1: " + "["
+			writer.write("["+format.format(date) + "] " + player.getName() + " placed a sign: " + " Line 1: " + "["
 					+ sign.getListValue().get().get(0).toPlain() + "]" + " Line 2: " + "["
 					+ sign.getListValue().get().get(1).toPlainSingle() + "]" + " Line 3: " + "["
 					+ sign.getListValue().get().get(2).toPlain() + "]" + " Line 4: " + "["
 					+ sign.getListValue().get().get(3).toPlain() + "] ");
 			writer.write("Location: " + worldname + " " + x + " " + y + " " + z);
 		}
+
 		writer.close();
 	}
 
