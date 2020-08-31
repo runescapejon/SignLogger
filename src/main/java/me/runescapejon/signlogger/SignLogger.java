@@ -37,7 +37,7 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.GuiceObjectMapperFactory;
 
-@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.5", authors = "runescapejon")
+@Plugin(id = "signlogger", name = "SignLogger", description = "Basically log all the signs in game and console..", version = "1.6", authors = "runescapejon")
 public class SignLogger {
 	private static Logger logger;
 	// hmmm why are you reading this? xD
@@ -150,12 +150,13 @@ public class SignLogger {
 						sign.getListValue().get().get(1).toPlainSingle() + "]", TextColors.DARK_GREEN, "\n", "Line 3: ",
 						TextColors.RED, "[", sign.getListValue().get().get(2).toPlain() + "]", TextColors.DARK_GREEN,
 						"\n", "Line 4: ", TextColors.RED, "[", sign.getListValue().get().get(3).toPlain() + "] "));
-
-				p.sendMessage(Text.of(
-						Text.builder("[TP] ").color(TextColors.AQUA).style(TextStyles.BOLD)
-								.onClick(TextActions.executeCallback(Teleport(p, location)))
-								.onHover(TextActions.showText(Text.of("Click here to teleport to the sign."))),
-						TextColors.RED, "Location: ", worldname, " ", x, " ", y, " ", z));
+				if (p.hasPermission("sign.tp")) {
+					p.sendMessage(Text.of(
+							Text.builder("[TP] ").color(TextColors.AQUA).style(TextStyles.BOLD)
+									.onClick(TextActions.executeCallback(Teleport(p, location)))
+									.onHover(TextActions.showText(Text.of("Click here to teleport to the sign."))),
+							TextColors.RED, "Location: ", worldname, " ", x, " ", y, " ", z));
+				}
 			}
 		}
 	}
@@ -170,7 +171,7 @@ public class SignLogger {
 		Date date = new Date();
 		SimpleDateFormat format = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
 		if (Logf.length() == 0) {
-			writer.write("["+format.format(date) + "] " + player.getName() + " placed a sign: " + " Line 1: " + "["
+			writer.write("[" + format.format(date) + "] " + player.getName() + " placed a sign: " + " Line 1: " + "["
 					+ sign.getListValue().get().get(0).toPlain() + "]" + " Line 2: " + "["
 					+ sign.getListValue().get().get(1).toPlainSingle() + "]" + " Line 3: " + "["
 					+ sign.getListValue().get().get(2).toPlain() + "]" + " Line 4: " + "["
@@ -179,7 +180,7 @@ public class SignLogger {
 			writer.newLine();
 		} else {
 			writer.newLine();
-			writer.write("["+format.format(date) + "] " + player.getName() + " placed a sign: " + " Line 1: " + "["
+			writer.write("[" + format.format(date) + "] " + player.getName() + " placed a sign: " + " Line 1: " + "["
 					+ sign.getListValue().get().get(0).toPlain() + "]" + " Line 2: " + "["
 					+ sign.getListValue().get().get(1).toPlainSingle() + "]" + " Line 3: " + "["
 					+ sign.getListValue().get().get(2).toPlain() + "]" + " Line 4: " + "["
